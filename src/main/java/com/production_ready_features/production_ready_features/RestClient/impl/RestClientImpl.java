@@ -3,8 +3,10 @@ package com.production_ready_features.production_ready_features.RestClient.impl;
 import com.production_ready_features.production_ready_features.RestClient.RestClientInterface;
 import com.production_ready_features.production_ready_features.advices.ApiResponse;
 import com.production_ready_features.production_ready_features.dto.EmployeeDTO;
+import com.production_ready_features.production_ready_features.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -28,6 +30,11 @@ public  class RestClientImpl implements RestClientInterface {
         ApiResponse<EmployeeDTO> employeeDTOApiResponse=restClient.get()
                 .uri("employees/{empId}",id)
                 .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError,(req,res)->
+                {
+                    System.out.println(new String(res.getBody().readAllBytes()));
+                    throw  new ResourceNotFoundException("the id is not present");
+                })
                 .body(new ParameterizedTypeReference<>() {
                 });
         return employeeDTOApiResponse.getData();
