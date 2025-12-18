@@ -1,5 +1,6 @@
 package com.production_ready_features.production_ready_features.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import org.springframework.data.annotation.CreatedBy;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 public class AuditEntity
 {
     @CreatedDate
+    @Column(updatable = false,nullable = false)
     private LocalDateTime createdDate;
     @LastModifiedDate
     private LocalDateTime LastModifiedDate;
